@@ -13,7 +13,7 @@
   --title-color: hsl(var(--hue), 12%, 15%);
   --text-color: hsl(var(--hue), 8%, 35%);
   --body-color: hsl(var(--hue), 100%, 99%);
-  --container-color: #FFF;
+  --container-color: #290F51;
 
   /*========== Font and typography ==========*/
   --body-font: 'Open Sans', sans-serif;
@@ -22,8 +22,8 @@
   --tiny-font-size: .625rem;
 
   /*========== z index ==========*/
-  --z-tooltip: 10;
-  --z-fixed: 100;
+  /* --z-tooltip: 10; */
+  /* --z-fixed: 100; */
 }
 
 @media screen and (min-width: 968px) {
@@ -45,11 +45,12 @@ html {
 }
 
 body {
-  margin: var(--header-height) 0 0 0;
-  font-family: var(--body-font);
-  font-size: var(--normal-font-size);
-  background-color: var(--body-color);
-  color: var(--text-color);
+    margin: var(--header-height) 0 0 0;
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    background: url(/ScoreVault/image/bg/blur_background.png) no-repeat center center fixed;
+    background-size: cover;
+    color: var(--text-color);
 }
 
 ul {
@@ -77,9 +78,9 @@ img {
   margin-bottom: 1.5rem;
 }
 
-.section__height {
+/* .section__height {
   height: 100vh;
-}
+} */
 
 /*=============== LAYOUT ===============*/
 .container {
@@ -95,13 +96,14 @@ img {
   left: 0;
   width: 100%;
   background-color: var(--container-color);
-  z-index: var(--z-fixed);
+  /* z-index: var(--z-fixed); */
   transition: .4s;
 }
 
 /*=============== NAV ===============*/
 .nav {
   height: var(--header-height);
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -143,8 +145,8 @@ img {
   flex-direction: column;
   align-items: center;
   row-gap: 4px;
-  color: var(--title-color);
-  font-weight: 600;
+  color: white;
+  font-weight: 150;
 }
 
 .nav__list {
@@ -161,11 +163,11 @@ img {
 }
 
 /*Active link*/
-.active-link {
+/* .active-link {
   position: relative;
   color: var(--first-color);
   transition: .3s;
-}
+} */
 
 /* Minimalist design, active link */
 /* .active-link::before{
@@ -183,10 +185,15 @@ img {
   box-shadow: 0 1px 12px hsla(var(--hue), var(--sat), 15%, 0.15);
 }
 
+
+
+
+
+
 /*=============== MEDIA QUERIES ===============*/
 /* For small devices */
 /* Remove if you choose, the minimalist design */
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 520px) {
   .nav__name {
     display: none;
   }

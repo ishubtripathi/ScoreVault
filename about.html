@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="/ScoreVault/css/about.css">
+</head>
+<body>
+    <!-- Include the navbar container -->
+    <div id="navbarContainer"></div>
+    <section class="container section section__height" id="about">
+        <!-- About section content -->
+        <h2 class="section__title">About</h2>
+    </section>
+
+    <!-- Include the JavaScript file at the end of the body -->
+    <script src="assets/js/main.js"></script>
+
+    <!-- JavaScript code to fetch and include the navbar -->
+    <script>
+        // Fetch and include navbar content
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbarContainer').innerHTML = data;
+            })
+            .catch(error => console.error('Error fetching navbar:', error));
+    </script>
+</body>
+</html>
