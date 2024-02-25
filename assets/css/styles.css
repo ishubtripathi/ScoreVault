@@ -48,7 +48,7 @@ body {
     margin: var(--header-height) 0 0 0;
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
-    background: url(/ScoreVault/image/bg/blur_background.png) no-repeat center center fixed;
+    background: url(/image/bg/blur_background.png) no-repeat center center fixed;
     background-size: cover;
     color: var(--text-color);
 }

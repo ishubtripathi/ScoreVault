@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About</title>
     <!-- Link to the CSS file -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <!-- <link rel="stylesheet" href="assets/css/styles.css"> -->
     <link rel="stylesheet" href="/ScoreVault/css/about.css">
 </head>
 <body>
@@ -13,21 +13,24 @@
     <div id="navbarContainer"></div>
     <section class="container section section__height" id="about">
         <!-- About section content -->
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, explicabo? Fugiat provident quidem sunt vel voluptate tempora. Ipsum quod voluptatum odio molestiae non totam voluptates nobis quidem? Nam, tempore porro?</p>
         <h2 class="section__title">About</h2>
     </section>
 
-    <!-- Include the JavaScript file at the end of the body -->
     <script src="assets/js/main.js"></script>
 
-    <!-- JavaScript code to fetch and include the navbar -->
     <script>
         // Fetch and include navbar content
         fetch('navbar.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('navbarContainer').innerHTML = data;
+                // Add 'active' class to the about section
+                document.getElementById('about').classList.add('active');
             })
             .catch(error => console.error('Error fetching navbar:', error));
+            
     </script>
+
 </body>
 </html>
