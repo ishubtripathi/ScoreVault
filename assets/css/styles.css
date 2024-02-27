@@ -163,10 +163,14 @@ img {
 }
 
 /*Active link*/
-/* .active-link {
+.active-link {
   position: relative;
   color: var(--first-color);
   transition: .3s;
+}
+
+/* .active-link {
+  color: green;
 } */
 
 /* Minimalist design, active link */
@@ -197,6 +201,10 @@ img {
   .nav__name {
     display: none;
   }
+   .nav__link:hover {
+    color: var(--first-color);
+  }
+
 }
 
 /* For medium devices */
