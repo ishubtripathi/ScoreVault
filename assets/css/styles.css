@@ -40,6 +40,13 @@
   margin: 0;
 }
 
+/*==================================== particel js==================== */
+
+#particle-js{
+  height: 100%;
+  background: white;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -114,8 +121,16 @@ img {
   border-radius: 50%;
 }
 
-.nav__logo {
-  color: var(--title-color);
+.nav__logo img {
+  width: 10rem; /* Adjust as needed */
+  height: auto; 
+  margin-left: -20px;
+  margin-bottom: -5px;
+}
+
+.nav__logo:hover {
+  color: rgb(10, 243, 231);
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -189,8 +204,6 @@ img {
   box-shadow: 0 1px 12px hsla(var(--hue), var(--sat), 15%, 0.15);
 }
 
-
-/*==================================== particel js==================== */
 
 
 

@@ -6,27 +6,52 @@
     <title>About</title>
     <!-- Link to the CSS file -->
     <link rel="stylesheet" href="/ScoreVault/css/home.css">
+    <!-- Link to Particle.js library -->
+    <script src="/particlejs/particles.js"></script>
 </head>
 <body>
-    <!-- Include the navbar container -->
+    <!-- Particle.js container -->
+    <!-- Fetch and include navbar content -->
     <div id="navbarContainer"></div>
-    <section class="container section section__height" id="about">
-        <!-- About section content -->
-        <h2 class="section__title">Home</h2>
-    </section>
-
+    <script>
+        fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('navbarContainer').innerHTML = data;
+        })
+        .catch(error => console.error('Error fetching navbar:', error));
+    </script>
+    
+    <div id="particles-js">   
+        <section class="container section section__height" id="about">
+            <h2>File Upload & Image Preview</h2>
+            <p class="lead">No Plugins <b>Just Javascript</b></p>
+            
+            <!-- Upload  -->
+            <form id="file-upload-form" class="uploader">
+            <input id="file-upload" type="file" name="fileUpload" accept=".pdf*" />
+            
+            <label for="file-upload" id="file-drag">
+                <img id="file-image" src="#" alt="Preview" class="hidden">
+                <div id="start">
+                <i class="fa fa-download" aria-hidden="true"></i>
+                <div>Select a file or drag here (.pdf)</div>
+                <!-- <div id="notimage" class="hidden">Please select an image</div> -->
+                <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
+                </div>
+                <div id="response" class="hidden">
+                <div id="messages"></div>
+                <progress class="progress" id="file-progress" value="0">
+                    <span>0</span>%
+                </progress>
+                </div>
+            </label>
+            </form>
+        </section>
+    </div> 
     <!-- Include the JavaScript file at the end of the body -->
     <script src="assets/js/main.js"></script>
-
-    <!-- JavaScript code to fetch and include the navbar -->
-    <script>
-        // Fetch and include navbar content
-        fetch('navbar.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('navbarContainer').innerHTML = data;
-            })
-            .catch(error => console.error('Error fetching navbar:', error));
-    </script>
+    <script src="/particlejs/app.js"></script>
+    <script src="/pagejs/home.js"></script>
 </body>
 </html>
