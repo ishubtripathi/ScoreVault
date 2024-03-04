@@ -210,8 +210,9 @@ p {
 }
 
 @keyframes showTick {
-    0% { opacity: 0; transform: scale(0.8); }
-    100% { opacity: 1; transform: scale(1); }
+    0% { opacity: 1; transform: scale(1); filter: blur(0); }
+    90% { opacity: 1; transform: scale(1); filter: blur(0); }
+    100% { opacity: 0; transform: scale(1.2); filter: blur(0); }
 }
 
 .hidden {
@@ -221,5 +222,13 @@ p {
 .tick-animation {
     visibility: visible;
     animation: showTick 1s forwards;
+}
+
+.tick-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999; /* Ensure it's above other content */
 }
 
