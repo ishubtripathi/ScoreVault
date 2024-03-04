@@ -29,8 +29,7 @@ h2 {
     font-family: "Roboto", sans-serif;
     font-size: 26px;
     line-height: 1;
-    /* color: var(--theme); */
-    color: wheat;
+    color: wheat; /* Changed from a commented out variable */
     padding-bottom: 15px;
     margin-bottom: 0;
 }
@@ -38,8 +37,8 @@ h2 {
 p {
     font-family: "Roboto", sans-serif;
     font-size: 18px;
-    /* color: var(--dark-text); */
     padding-bottom: 10px;
+    color: var(--dark-text); /* Uncommented and added color */
 }
 
 /* Upload Demo */
@@ -59,7 +58,6 @@ p {
     text-align: center;
     background: rgba(128, 128, 128, 0.097);
     border-radius: 15px;
-    /* border: 3px solid #eee; */
     border: 1px solid rgba(28, 27, 27, 0.73);
     box-shadow: 2px 4px 10px 0px rgba(0, 0, 0, 0.263); 
     transition: all .2s ease;
@@ -71,11 +69,6 @@ p {
     box-shadow: 2px 4px 10px 0px rgba(7, 7, 7, 0.063);
     border-radius: 20px;
 }
-
-/* .uploader label.hover {
-    border: 3px solid var(--theme);
-    box-shadow: inset 0 0 0 6px #eee;
-} */
 
 .uploader label.hover #start i.fa {
     transform: scale(0.8);
@@ -215,3 +208,18 @@ p {
         max-width: 150px;
     }
 }
+
+@keyframes showTick {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.hidden {
+    display: none;
+}
+
+.tick-animation {
+    visibility: visible;
+    animation: showTick 1s forwards;
+}
+

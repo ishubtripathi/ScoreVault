@@ -29,8 +29,11 @@ app.post('/upload', upload.single('pdfFile'), (req, res) => {
       return res.status(500).json({ error: 'Error reading uploaded file' });
     }
 
+    // Instantiate PDFParser object
+    const pdfParser = new PDFParser();
+
     // Parse the PDF file to extract text
-    PDFParser(data).then(pdf => {
+    pdfParser.parseBuffer(data).then(pdf => {
       const text = pdf.text;
 
       // Process the text to calculate total score, subject-wise score, and SGPA
