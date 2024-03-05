@@ -76,16 +76,25 @@ function ekUpload() {
             setTimeout(() => {
                 document.getElementById('tick-animation').classList.add('hidden');
             }, 1000);
+            
+            // Log success
+            console.log('Upload successful');
         });
 
         xhr.upload.addEventListener('error', function (event) {
             console.error('Upload failed');
             output('File upload failed.');
+            
+            // Log error
+            console.error('Upload failed');
         });
 
         xhr.upload.addEventListener('abort', function (event) {
             console.warn('Upload aborted');
             output('File upload aborted.');
+            
+            // Log abortion
+            console.warn('Upload aborted');
         });
 
         // Set up the request

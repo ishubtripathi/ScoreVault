@@ -9,18 +9,20 @@ const port = 3000;
 // Configure Multer for handling file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Specify the directory where uploaded files will be stored
+    cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    // Generate a unique filename for the uploaded file
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
   limits: { fileSize: 10 * 1024 * 1024 } // Limit file size to 10MB
 });
+
+// Serve uploaded files statically
+app.use('/uploads', express.static('uploads'));
 
 // Define API endpoint for file upload
 app.post('/upload', upload.single('pdfFile'), (req, res) => {
