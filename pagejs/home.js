@@ -7,10 +7,10 @@ function ekUpload() {
 
         fileSelect.addEventListener('change', fileSelectHandler, false);
 
-        // Is XHR2 available?
+        // Check if XHR2 is available
         var xhr = new XMLHttpRequest();
         if (xhr.upload) {
-            // File Drop
+            // File Drag and Drop
             fileDrag.addEventListener('dragover', fileDragHover, false);
             fileDrag.addEventListener('dragleave', fileDragHover, false);
             fileDrag.addEventListener('drop', fileSelectHandler, false);
@@ -40,9 +40,8 @@ function ekUpload() {
         }
     }
 
-    // Output
     function output(msg) {
-        // Response
+        // Output response
         var m = document.getElementById('messages');
         m.innerHTML = msg;
     }
@@ -79,6 +78,9 @@ function ekUpload() {
             
             // Log success
             console.log('Upload successful');
+            
+            // Retrieve result from the server
+            getResultFromServer();
         });
 
         xhr.upload.addEventListener('error', function (event) {
@@ -98,7 +100,7 @@ function ekUpload() {
         });
 
         // Set up the request
-        xhr.open('POST', '/upload', true);
+        xhr.open('POST', 'http://localhost:5000/uploads', true);
 
         // Create FormData object and append the file
         var formData = new FormData();
@@ -108,6 +110,30 @@ function ekUpload() {
         xhr.send(formData);
     }
 
+    function getResultFromServer() {
+        fetch('http://localhost:5000/result')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update HTML elements with the returned result
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('totalScore').innerHTML = `<h3>Total Score: ${data.totalScore}</h3>`;
+            document.getElementById('sgpa').innerHTML = `<h3>SGPA: ${data.sgpa}</h3>`;
+            const subjectWiseScoreHTML = Object.entries(data.subjectWiseScore)
+                .map(([subject, score]) => `<div>${subject}: ${score}</div>`)
+                .join('');
+            document.getElementById('subjectWiseScore').innerHTML = `<h3>Subject-wise Scores:</h3> ${subjectWiseScoreHTML}`;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    
+
     // Check for the various File API support.
     if (window.File && window.FileList && window.FileReader) {
         Init();
@@ -116,5 +142,5 @@ function ekUpload() {
     }
 }
 
-// Call the function to initialize file upload functionality
+// Initialize file upload functionality
 ekUpload();
