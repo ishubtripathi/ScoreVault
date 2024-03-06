@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfReader
 import os
+import re
 
 app = Flask(__name__)
 CORS(app)
@@ -28,19 +29,30 @@ def parse_pdf(file_path):
         return None
 
 def calculate_total_score(text):
-    # Implement your logic to calculate total score
-    # Example: Assuming the total score is mentioned at a specific position in the text
-    pass
+    total_score_regex = r'Total Score: (\d+)'
+    match = re.search(total_score_regex, text)
+    if match:
+        return int(match.group(1))
+    else:
+        return 0
 
 def calculate_subject_wise_score(text):
-    # Implement your logic to calculate subject-wise score
-    # Example: Assuming subject-wise scores are mentioned in a table format
-    pass
+    subject_wise_score = {}
+    lines = text.split('\n')
+    for line in lines:
+        if 'Subject:' in line and 'Score:' in line:
+            subject_score = line.split(',')
+            if len(subject_score) == 2:
+                subject = subject_score[0].split(': ')[1].strip()
+                score = int(subject_score[1].split(': ')[1].strip())
+                subject_wise_score[subject] = score
+    return subject_wise_score
 
 def calculate_sgpa(subject_wise_score):
-    # Implement your logic to calculate SGPA
-    # Example: Assuming SGPA calculation is based on subject-wise scores
-    pass
+    total_credit_points = sum(score / 10 for score in subject_wise_score.values())
+    total_credits = len(subject_wise_score)
+    sgpa = total_credit_points / total_credits if total_credits > 0 else 0
+    return sgpa
 
 @app.route('/uploads', methods=['POST'])
 @cross_origin()
@@ -59,16 +71,13 @@ def upload_file():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
             
-            # Parse the PDF file
             pdf_text = parse_pdf(file_path)
             
             if pdf_text is not None:
-                # Process the text to calculate total score, subject-wise score, and SGPA
                 total_score = calculate_total_score(pdf_text)
                 subject_wise_score = calculate_subject_wise_score(pdf_text)
                 sgpa = calculate_sgpa(subject_wise_score)
                 
-                # Return the result
                 return jsonify({'totalScore': total_score, 'subjectWiseScore': subject_wise_score, 'sgpa': sgpa}), 200
             else:
                 return jsonify({'error': 'Error parsing PDF file'}), 500
@@ -78,6 +87,20 @@ def upload_file():
     except Exception as e:
         print(e)
         return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/result', methods=['GET'])
+@cross_origin()
+def get_result():
+    result_data = {
+        'totalScore': 100,
+        'subjectWiseScore': {
+            'Math': 90,
+            'Science': 95,
+            'English': 85
+        },
+        'sgpa': 9.5
+    }
+    return jsonify(result_data), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
