@@ -43,15 +43,34 @@ function ekUpload() {
     function output(msg) {
         // Output response
         var m = document.getElementById('messages');
-        m.innerHTML = msg;
+        if (m) {
+            m.innerHTML = msg;
+        } else {
+            console.error("Element with ID 'messages' not found.");
+        }
     }
 
     function parseFile(file) {
         console.log(file.name);
         output('<strong>' + encodeURI(file.name) + '</strong>');
-        document.getElementById('start').classList.add("hidden");
-        document.getElementById('response').classList.remove("hidden");
-        document.getElementById('file-image').classList.add("hidden");
+        var startElement = document.getElementById('start');
+        if (startElement) {
+            startElement.classList.add("hidden");
+        } else {
+            console.error("Element with ID 'start' not found.");
+        }
+        var responseElement = document.getElementById('response');
+        if (responseElement) {
+            responseElement.classList.remove("hidden");
+        } else {
+            console.error("Element with ID 'response' not found.");
+        }
+        var fileImageElement = document.getElementById('file-image');
+        if (fileImageElement) {
+            fileImageElement.classList.add("hidden");
+        } else {
+            console.error("Element with ID 'file-image' not found.");
+        }
     }
 
     function uploadFile(file) {
@@ -62,31 +81,51 @@ function ekUpload() {
             if (event.lengthComputable) {
                 var percentComplete = (event.loaded / event.total) * 100;
                 console.log('Upload progress: ' + percentComplete.toFixed(2) + '%');
-                document.getElementById('file-progress').value = percentComplete;
+                var fileProgressElement = document.getElementById('file-progress');
+                if (fileProgressElement) {
+                    fileProgressElement.value = percentComplete;
+                } else {
+                    console.error("Element with ID 'file-progress' not found.");
+                }
+                // getResultFromServer();
             }
+
         });
 
-        xhr.upload.addEventListener('load', function (event) {
-            console.log('Upload completed');
-            output('File uploaded successfully!');
-            document.getElementById('tick-animation').classList.remove("hidden"); // Show tick animation
-            
-            // Automatically hide the tick animation after 1 second
-            setTimeout(() => {
-                document.getElementById('tick-animation').classList.add('hidden');
-            }, 1000);
-            
-            // Log success
-            console.log('Upload successful');
-            
-            // Retrieve result from the server
-            getResultFromServer();
-        });
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    console.log('Upload completed');
+                    output('File uploaded successfully!');
+                    var tickAnimationElement = document.getElementById('tick-animation');
+                    if (tickAnimationElement) {
+                        tickAnimationElement.classList.remove("hidden"); // Show tick animation
+
+                        // Automatically hide the tick animation after 1 second
+                        setTimeout(() => {
+                            tickAnimationElement.classList.add('hidden');
+                        }, 1000);
+                    } else {
+                        console.error("Element with ID 'tick-animation' not found.");
+                    }
+                    // Log success
+                    console.log('Upload successful');
+
+                    // Retrieve result from the server
+                    getResultFromServer();
+                } else {
+                    console.error('Upload failed');
+                    output('File upload failed.');
+                    // Log error
+                    console.error('Upload failed');
+                }
+            }
+        };
 
         xhr.upload.addEventListener('error', function (event) {
             console.error('Upload failed');
             output('File upload failed.');
-            
+
             // Log error
             console.error('Upload failed');
         });
@@ -94,7 +133,7 @@ function ekUpload() {
         xhr.upload.addEventListener('abort', function (event) {
             console.warn('Upload aborted');
             output('File upload aborted.');
-            
+
             // Log abortion
             console.warn('Upload aborted');
         });
@@ -110,35 +149,77 @@ function ekUpload() {
         xhr.send(formData);
     }
 
+
     function getResultFromServer() {
         fetch('http://localhost:5000/result')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Update HTML elements with the returned result
-            document.getElementById('result').classList.remove('hidden');
-            document.getElementById('totalScore').innerHTML = `<h3>Total Score: ${data.totalScore}</h3>`;
-            document.getElementById('sgpa').innerHTML = `<h3>SGPA: ${data.sgpa}</h3>`;
-            const subjectWiseScoreHTML = Object.entries(data.subjectWiseScore)
-                .map(([subject, score]) => `<div>${subject}: ${score}</div>`)
-                .join('');
-            document.getElementById('subjectWiseScore').innerHTML = `<h3>Subject-wise Scores:</h3> ${subjectWiseScoreHTML}`;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display total score and SGPA directly on the homepage
+                var totalScoreHomepageElement = document.getElementById('totalScoreHomepage');
+                if (totalScoreHomepageElement) {
+                    totalScoreHomepageElement.innerText = `Total Score: ${data.totalScore}`;
+                } else {
+                    console.error("Element with ID 'totalScoreHomepage' not found.");
+                }
+                var sgpaHomepageElement = document.getElementById('sgpaHomepage');
+                if (sgpaHomepageElement) {
+                    sgpaHomepageElement.innerText = `SGPA: ${data.sgpa}`;
+                } else {
+                    console.error("Element with ID 'sgpaHomepage' not found.");
+                }
+
+                // Update HTML elements with the detailed result
+                var resultElement = document.getElementById('result');
+                if (resultElement) {
+                    resultElement.classList.remove('hidden');
+                    var totalScoreElement = document.getElementById('totalScore');
+                    if (totalScoreElement) {
+                        totalScoreElement.innerHTML = `<h3>Total Score: ${data.totalScore}</h3>`;
+                    } else {
+                        console.error("Element with ID 'totalScore' not found.");
+                    }
+                    var sgpaElement = document.getElementById('sgpa');
+                    if (sgpaElement) {
+                        sgpaElement.innerHTML = `<h3>SGPA: ${data.sgpa}</h3>`;
+                    } else {
+                        console.error("Element with ID 'sgpa' not found.");
+                    }
+                    const subjectWiseScoreHTML = Object.entries(data.subjectWiseScore)
+                        .map(([subject, score]) => `<div>${subject}: ${score}</div>`)
+                        .join('');
+                    var subjectWiseScoreElement = document.getElementById('subjectWiseScore');
+                    if (subjectWiseScoreElement) {
+                        subjectWiseScoreElement.innerHTML = `<h3>Subject-wise Scores:</h3> ${subjectWiseScoreHTML}`;
+                    } else {
+                        console.error("Element with ID 'subjectWiseScore' not found.");
+                    }
+                } else {
+                    console.error("Element with ID 'result' not found.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                output('Error fetching data from the server.');
+            });
     }
-    
+
+
 
     // Check for the various File API support.
     if (window.File && window.FileList && window.FileReader) {
         Init();
     } else {
-        document.getElementById('file-drag').style.display = 'none';
+        var fileDragElement = document.getElementById('file-drag');
+        if (fileDragElement) {
+            fileDragElement.style.display = 'none';
+        } else {
+            console.error("Element with ID 'file-drag' not found.");
+        }
     }
 }
 

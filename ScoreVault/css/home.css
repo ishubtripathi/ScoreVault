@@ -148,12 +148,16 @@ p {
 }
 
 .uploader .progress[value]::-webkit-progress-value {
-    background: linear-gradient(to right, rgba(51, 51, 51, 0.8) 0%, var(--theme) 50%);
+    transition: .2s;
+    background: rgb(16, 231, 191);
+    /* background: linear-gradient(to right, rgba(51, 51, 51, 0.8) 0%, var(--theme) 50%); */
     border-radius: 4px;
 }
 
 .uploader .progress[value]::-moz-progress-bar {
-    background: linear-gradient(to right, rgba(51, 51, 51, 0.8) 0%, var(--theme) 50%);
+    transition: .4s;
+    background: rgb(16, 231, 191);
+    /* background: linear-gradient(to right, rgba(51, 51, 51, 0.8) 0%, var(--theme) 50%); */
     border-radius: 4px;
 }
 

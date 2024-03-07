@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
-from PyPDF2 import PdfReader
+import fitz  # PyMuPDF
 import os
 import re
 
@@ -16,14 +16,13 @@ ALLOWED_EXTENSIONS = {'pdf'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def parse_pdf(file_path):
+def extract_text_from_pdf(file_path):
     try:
-        with open(file_path, 'rb') as file:
-            pdf_reader = PdfReader(file)
-            text = ''
-            for page_num in range(len(pdf_reader.pages)):
-                text += pdf_reader.pages[page_num].extract_text()
-            return text
+        text = ''
+        with fitz.open(file_path) as doc:
+            for page in doc:
+                text += page.get_text()
+        return text
     except Exception as e:
         print(e)
         return None
@@ -71,7 +70,7 @@ def upload_file():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
             
-            pdf_text = parse_pdf(file_path)
+            pdf_text = extract_text_from_pdf(file_path)
             
             if pdf_text is not None:
                 total_score = calculate_total_score(pdf_text)
@@ -80,7 +79,7 @@ def upload_file():
                 
                 return jsonify({'totalScore': total_score, 'subjectWiseScore': subject_wise_score, 'sgpa': sgpa}), 200
             else:
-                return jsonify({'error': 'Error parsing PDF file'}), 500
+                return jsonify({'error': 'Error extracting text from PDF file'}), 500
             
         else:
             return jsonify({'error': 'Invalid file type'}), 400
