@@ -160,40 +160,28 @@ function ekUpload() {
             })
             .then(data => {
                 // Display total score and SGPA directly on the homepage
-                var totalScoreHomepageElement = document.getElementById('totalScoreHomepage');
-                if (totalScoreHomepageElement) {
-                    totalScoreHomepageElement.innerText = `Total Score: ${data.totalScore}`;
+                var totalScoreElement = document.getElementById('totalScore');
+                if (totalScoreElement) {
+                    totalScoreElement.innerText = `Total Score: ${data.totalScore}`;
                 } else {
-                    console.error("Element with ID 'totalScoreHomepage' not found.");
+                    console.error("Element with ID 'totalScore' not found.");
                 }
-                var sgpaHomepageElement = document.getElementById('sgpaHomepage');
-                if (sgpaHomepageElement) {
-                    sgpaHomepageElement.innerText = `SGPA: ${data.sgpa}`;
+                var sgpaElement = document.getElementById('sgpa');
+                if (sgpaElement) {
+                    sgpaElement.innerText = `SGPA: ${data.sgpa}`;
                 } else {
-                    console.error("Element with ID 'sgpaHomepage' not found.");
+                    console.error("Element with ID 'sgpa' not found.");
                 }
-
+    
                 // Update HTML elements with the detailed result
                 var resultElement = document.getElementById('result');
                 if (resultElement) {
                     resultElement.classList.remove('hidden');
-                    var totalScoreElement = document.getElementById('totalScore');
-                    if (totalScoreElement) {
-                        totalScoreElement.innerHTML = `<h3>Total Score: ${data.totalScore}</h3>`;
-                    } else {
-                        console.error("Element with ID 'totalScore' not found.");
-                    }
-                    var sgpaElement = document.getElementById('sgpa');
-                    if (sgpaElement) {
-                        sgpaElement.innerHTML = `<h3>SGPA: ${data.sgpa}</h3>`;
-                    } else {
-                        console.error("Element with ID 'sgpa' not found.");
-                    }
-                    const subjectWiseScoreHTML = Object.entries(data.subjectWiseScore)
-                        .map(([subject, score]) => `<div>${subject}: ${score}</div>`)
-                        .join('');
                     var subjectWiseScoreElement = document.getElementById('subjectWiseScore');
                     if (subjectWiseScoreElement) {
+                        const subjectWiseScoreHTML = Object.entries(data.subjectWiseScore)
+                            .map(([subject, score]) => `<div>${subject}: ${score}</div>`)
+                            .join('');
                         subjectWiseScoreElement.innerHTML = `<h3>Subject-wise Scores:</h3> ${subjectWiseScoreHTML}`;
                     } else {
                         console.error("Element with ID 'subjectWiseScore' not found.");
@@ -207,6 +195,7 @@ function ekUpload() {
                 output('Error fetching data from the server.');
             });
     }
+    
 
 
 
