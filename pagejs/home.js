@@ -87,9 +87,7 @@ function ekUpload() {
                 } else {
                     console.error("Element with ID 'file-progress' not found.");
                 }
-                // getResultFromServer();
             }
-
         });
 
         xhr.onreadystatechange = function () {
@@ -111,7 +109,7 @@ function ekUpload() {
                     // Log success
                     console.log('Upload successful');
 
-                    // Retrieve result from the server
+                    // Retrieve result from the server and display on the homepage
                     getResultFromServer();
                 } else {
                     console.error('Upload failed');
@@ -149,55 +147,45 @@ function ekUpload() {
         xhr.send(formData);
     }
 
-
-    function getResultFromServer() {
-        fetch('http://localhost:5000/result')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Display total score and SGPA directly on the homepage
-                var totalScoreElement = document.getElementById('totalScore');
-                if (totalScoreElement) {
-                    totalScoreElement.innerText = `Total Score: ${data.totalScore}`;
-                } else {
-                    console.error("Element with ID 'totalScore' not found.");
-                }
-                var sgpaElement = document.getElementById('sgpa');
-                if (sgpaElement) {
-                    sgpaElement.innerText = `SGPA: ${data.sgpa}`;
-                } else {
-                    console.error("Element with ID 'sgpa' not found.");
-                }
+    function ekUpload() {
+        // Existing code...
     
-                // Update HTML elements with the detailed result
-                var resultElement = document.getElementById('result');
-                if (resultElement) {
-                    resultElement.classList.remove('hidden');
-                    var subjectWiseScoreElement = document.getElementById('subjectWiseScore');
-                    if (subjectWiseScoreElement) {
-                        const subjectWiseScoreHTML = Object.entries(data.subjectWiseScore)
-                            .map(([subject, score]) => `<div>${subject}: ${score}</div>`)
-                            .join('');
-                        subjectWiseScoreElement.innerHTML = `<h3>Subject-wise Scores:</h3> ${subjectWiseScoreHTML}`;
-                    } else {
-                        console.error("Element with ID 'subjectWiseScore' not found.");
+        function getResultFromServer() {
+            fetch('http://localhost:5000/result')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
                     }
-                } else {
-                    console.error("Element with ID 'result' not found.");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                output('Error fetching data from the server.');
-            });
+                    return response.json();
+                })
+                .then(data => {
+                    // Display original marks and subjects
+                    var marksAndSubjectsElement = document.getElementById('marksAndSubjects');
+                    if (marksAndSubjectsElement) {
+                        marksAndSubjectsElement.innerHTML = '';
+    
+                        for (const subject in data.marksAndSubjects) {
+                            const scoreElement = document.createElement('div');
+                            scoreElement.textContent = `${subject}: ${data.marksAndSubjects[subject]}`;
+                            marksAndSubjectsElement.appendChild(scoreElement);
+                        }
+                    } else {
+                        console.error("Marks and subjects element not found.");
+                    }
+    
+                    // Additional code...
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching data from the server.');
+                });
+        }
+    
+        // Additional code...
     }
     
-
-
+    
+    
 
     // Check for the various File API support.
     if (window.File && window.FileList && window.FileReader) {
