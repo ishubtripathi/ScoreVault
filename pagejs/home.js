@@ -147,44 +147,58 @@ function ekUpload() {
         xhr.send(formData);
     }
 
-    function ekUpload() {
-        // Existing code...
+    function getResultFromServer() {
+        fetch('http://localhost:5000/result')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display total score
+                var totalScoreElement = document.getElementById('totalScore');
+                if (totalScoreElement) {
+                    totalScoreElement.innerText = `Total Score: ${data.totalScore}`;
+                } else {
+                    console.error("Total score element not found.");
+                }
     
-        function getResultFromServer() {
-            fetch('http://localhost:5000/result')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                // Display SGPA
+                var sgpaElement = document.getElementById('sgpa');
+                if (sgpaElement) {
+                    sgpaElement.innerText = `SGPA: ${data.sgpa}`;
+                } else {
+                    console.error("SGPA element not found.");
+                }
+    
+                // Display subject-wise scores
+                var subjectWiseScoreElement = document.getElementById('subjectWiseScore');
+                if (subjectWiseScoreElement) {
+                    subjectWiseScoreElement.innerHTML = ''; // Clear previous content
+    
+                    for (const subject in data.subjectWiseScore) {
+                        const scoreElement = document.createElement('div');
+                        scoreElement.textContent = `${subject}: ${data.subjectWiseScore[subject]}`;
+                        subjectWiseScoreElement.appendChild(scoreElement);
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    // Display original marks and subjects
-                    var marksAndSubjectsElement = document.getElementById('marksAndSubjects');
-                    if (marksAndSubjectsElement) {
-                        marksAndSubjectsElement.innerHTML = '';
+                } else {
+                    console.error("Subject-wise score element not found.");
+                }
     
-                        for (const subject in data.marksAndSubjects) {
-                            const scoreElement = document.createElement('div');
-                            scoreElement.textContent = `${subject}: ${data.marksAndSubjects[subject]}`;
-                            marksAndSubjectsElement.appendChild(scoreElement);
-                        }
-                    } else {
-                        console.error("Marks and subjects element not found.");
-                    }
-    
-                    // Additional code...
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error fetching data from the server.');
-                });
-        }
-    
-        // Additional code...
+                // Show the result section
+                var resultSection = document.getElementById('result');
+                if (resultSection) {
+                    resultSection.classList.remove("hidden");
+                } else {
+                    console.error("Result section not found.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error fetching data from the server.');
+            });
     }
-    
-    
     
 
     // Check for the various File API support.
@@ -198,6 +212,64 @@ function ekUpload() {
             console.error("Element with ID 'file-drag' not found.");
         }
     }
+}
+
+// Function to fetch and scan the uploaded PDF file
+function scanUploadedPDF(file) {
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const typedarray = new Uint8Array(event.target.result);
+        
+        // Load the PDF file using PDF.js
+        pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+            // Initialize variables to store scanned data
+            let totalScore = 0;
+            let subjectWiseScore = {};
+
+            // Iterate through each page of the PDF
+            const totalPages = pdf.numPages;
+            const pagePromises = [];
+            for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+                pagePromises.push(pdf.getPage(pageNumber));
+            }
+
+            Promise.all(pagePromises).then(function(pages) {
+                // Process each page
+                pages.forEach(function(page) {
+                    page.getTextContent().then(function(textContent) {
+                        // Extract text from the page
+                        const pageText = textContent.items.map(item => item.str).join('\n');
+                        
+                        // Scan relevant information (e.g., subjects and marks) from the pageText
+                        // You can customize this part according to your PDF structure
+
+                        // Example: Scan subjects and marks
+                        const subjectRegex = /Subject: (.+?)\n/g;
+                        const markRegex = /Marks: (\d+)/g;
+                        let match;
+                        while ((match = subjectRegex.exec(pageText)) !== null) {
+                            const subject = match[1].trim();
+                            const markMatch = markRegex.exec(pageText);
+                            if (markMatch) {
+                                const mark = parseInt(markMatch[1]);
+                                totalScore += mark;
+                                subjectWiseScore[subject] = mark;
+                            }
+                        }
+
+                        // Example: Calculate total score
+                        // You can customize this calculation based on your PDF structure
+
+                        // Example: Calculate SGPA
+                        // You can customize this calculation based on your PDF structure
+                    });
+                });
+            });
+        });
+    };
+
+    reader.readAsArrayBuffer(file);
 }
 
 // Initialize file upload functionality
